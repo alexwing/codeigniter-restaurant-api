@@ -21,10 +21,18 @@ class DinertableModel extends Model {
                 ->first();
 
         if (!$table) {
-            throw new Exception('Could not find client for specified ID');
+            throw new Exception('Could not find table for specified ID');
         }
 
         return $table;
     }
-
-}
+    
+	public function delete($id = null, bool $purge = false) {
+            
+            $reservations = new ReservationModel();
+            $reservations->deleteByTableId($id);
+            parent::delete($id, $purge);
+            
+    }
+        
+    }

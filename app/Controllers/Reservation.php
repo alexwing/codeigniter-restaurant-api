@@ -2,37 +2,72 @@
 
 namespace App\Controllers;
 
-use App\Models\DinertableModel;
+use App\Models\ReservationModel;
 use CodeIgniter\HTTP\Response;
 use CodeIgniter\HTTP\ResponseInterface;
 use Exception;
 
-class Dinertable extends BaseController {
+class Reservation extends BaseController {
 
     /**
-     * Get all Dinertables
+     * Get all Reservations
      * @return Response
      */
     public function index() {
-        $model = new DinertableModel();
+        $model = new ReservationModel();
         return $this->getResponse(
                         [
-                            'message' => 'Dinertable retrieved successfully',
-                            'Dinertable' => $model->findAll()
+                            'message' => 'Reservation retrieved successfully',
+                            'Reservation' => $model->findAll()
                         ]
         );
     }
 
     /**
-     * Create a new Dinertable
+     * Create a CheckAvailability
+     */
+    public function checkavailability() {
+       
+        $rules = [
+            'date' => 'required|valid_date',
+            'num' => 'required|decimal[0]|numeric|greater_than[0]|less_than[100]',
+        ];
+
+        $input = $this->getRequestInput($this->request);
+        
+
+        if (!$this->validateRequest($input, $rules)) {
+            return $this
+                            ->getResponse(
+                                    $this->validator->getErrors(),
+                                    ResponseInterface::HTTP_BAD_REQUEST
+            );
+        }
+
+        $model = new ReservationModel();
+
+        $available = $model->CheckAvailability($input['date'], $input['num']);
+
+
+        return $this->getResponse(
+                        [
+                            'message' => count($available).'Tables available',
+                            'reservation' => $available
+                        ]
+        );
+    }
+
+    /**
+     * Create a new Reservation
      */
     public function create() {
 
 
         $rules = [
+            'dinertable_id' => 'required|decimal[0]|numeric|greater_than[0]',
             'name' => 'required|min_length[3]|max_length[255]',
-            'min_diner' => 'required|decimal[0]|numeric|greater_than[0]|less_than[100]',
-            'max_diner' => 'required|decimal[0]|numeric|greater_than[0]|less_than[100]',
+            'date' => 'required|valid_date',
+            'num' => 'required|decimal[0]|numeric|greater_than[0]|less_than[100]',
         ];
 
         $input = $this->getRequestInput($this->request);
@@ -45,42 +80,50 @@ class Dinertable extends BaseController {
             );
         }
 
-        if ($input['min_diner'] > $input['max_diner']) {
+        $model = new ReservationModel();
+
+        $availables = $model->CheckAvailability($input['date'], $input['num']);
+
+        $found = false;
+        foreach ($availables as $available) {
+            if ($available['dinertable_id'] == $input['dinertable_id']) {
+                $found = true;
+            }
+        }
+        if (!$found) {
             return $this->getResponse(
                             [
-                                'message' => 'The minimum number of diners cannot be greater than the maximum',
+                                'message' => 'That table is not available for that date',
                             ]
             );
         }
-        
-        $model = new DinertableModel();
 
-        $dinertable = $model->where('name', $input['name'])->first();
+        $reservation = $model->where('name', $input['name'])->first();
 
         //if exist table
-        if ($dinertable) {
+        if ($reservation) {
             return $this->getResponse(
                             [
                                 'message' => 'The table already exists',
-                                'dinertable' => $dinertable
+                                'reservation' => $reservation
                             ]
             );
         }
 
         $model->save($input);
-        $dinertable = $model->where('name', $input['name'])->first();
+        $reservation = $model->where('name', $input['name'])->first();
 
 
         return $this->getResponse(
                         [
                             'message' => 'Table added successfully',
-                            'dinertable' => $dinertable
+                            'reservation' => $reservation
                         ]
         );
     }
 
     /**
-     * Get a single dinertable by ID
+     * Get a single reservation by ID
      */
     public function show() {
         try {
@@ -100,29 +143,29 @@ class Dinertable extends BaseController {
             }
 
 
-            $model = new DinertableModel();
+            $model = new ReservationModel();
             $id = $input['id'];
-            $dinertable = $model->findDinertableById($id);
+            $reservation = $model->findReservationById($id);
 
             return $this->getResponse(
                             [
-                                'message' => 'Table retrieved successfully',
-                                'dinertable' => $dinertable
+                                'message' => 'reservation retrieved successfully',
+                                'reservation' => $reservation
                             ]
             );
         } catch (Exception $e) {
             return $this->getResponse(
                             [
-                                'message' => 'Could not find table for specified ID'
+                                'message' => 'Could not find reservation for specified ID'
                             ],
                             ResponseInterface::HTTP_NOT_FOUND
             );
         }
     }
-   
+
     public function destroy() {
         try {
-            
+
             $rules = [
                 'id' => 'required|decimal[0]|numeric|greater_than[0]',
             ];
@@ -137,17 +180,17 @@ class Dinertable extends BaseController {
                 );
             }
 
-            
-            $model = new DinertableModel();
+
+            $model = new ReservationModel();
             $id = $input['id'];
-            
-            $dinertable = $model->findDinertableById($id);
-            $model->delete($dinertable);
+
+            $reservation = $model->findReservationById($id);
+            $model->delete($reservation);
 
             return $this
                             ->getResponse(
                                     [
-                                        'message' => 'Table deleted successfully',
+                                        'message' => 'Reservation deleted successfully',
                                     ]
             );
         } catch (Exception $exception) {

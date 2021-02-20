@@ -8,6 +8,12 @@ Test rest service, for the management of reservations in a restaurant.
 
     `https://{site}/dinertable`
 
+* Get a table in restaurant
+    
+    `https://{site}/dinertable/show`
+
+    `id:18`
+
 * Add table in restaurant
 
     `https://{site}/dinertable/create`
@@ -34,11 +40,9 @@ Test rest service, for the management of reservations in a restaurant.
 CodeIgniter is a PHP full-stack web framework that is light, fast, flexible, and secure. 
 More information can be found at the [official site](http://codeigniter.com).
 
-
 ## Installation & updates
 
-`composer create-project codeigniter4/appstarter` then `composer update` whenever
-there is a new release of the framework.
+`composer update` whenever there is a new release of the framework.
 
 When updating, check the release notes to see if there are any changes you might need to apply
 to your `app` folder. The affected files can be copied or merged from
