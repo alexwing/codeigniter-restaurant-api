@@ -95,11 +95,11 @@ class Reservation extends BaseController {
             );
         }
 
-
         $model->save($input);
-        $reservation = $model->where('name', $input['name'])->first();
-
-
+        $insert_id = $model->getInsertID();
+ 
+        $reservation = $model->where('id', $insert_id)->first();
+        
         return $this->getResponse(
                         [
                             'message' => 'The reservation has been made correctly',

@@ -68,7 +68,10 @@ class Dinertable extends BaseController {
         }
 
         $model->save($input);
-        $dinertable = $model->where('name', $input['name'])->first();
+         
+        $insert_id = $model->getInsertID();
+
+        $dinertable = $model->where('id', $insert_id)->first();
 
 
         return $this->getResponse(
