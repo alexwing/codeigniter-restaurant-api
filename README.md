@@ -6,17 +6,17 @@ Test rest service, for the management of reservations in a restaurant.
 
 * Get all tables in restaurant
 
-    `https://{site}/dinertable`
+    `{{urlserver}}/dinertable`
 
 * Get a table in restaurant
     
-    `https://{site}/dinertable/show`
+    `{{urlserver}}/dinertable/show`
 
     `id:18`
 
 * Add table in restaurant
 
-    `https://{site}/dinertable/create`
+    `{{urlserver}}/dinertable/create`
 
     `
     name:Test
@@ -25,9 +25,35 @@ Test rest service, for the management of reservations in a restaurant.
     `
 * Remove table in restaurant
 
-    `https://{site}/dinertable/destroy`
+    `{{urlserver}}/dinertable/destroy`
 
     `id:18`
+
+* Remove reservation
+
+    `{{urlserver}}/reservation/destroy`
+
+    `id:2`
+
+* Create a reservation
+
+    `{{urlserver}}/reservation/create`
+
+    `
+    reservation_date:2021-02-25
+    mum_diner:6
+    name:Francisco
+    dinertable_id:20
+    `
+
+* checkavailability
+
+    `{{urlserver}}/reservation/checkavailability`
+
+    `
+    date:2021-01-01
+    num: 3
+    `    
 
 # Migrations and seeders
 

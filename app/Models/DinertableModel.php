@@ -15,24 +15,25 @@ class DinertableModel extends Model {
     ];
 
     public function findDinertableById($id) {
-        $table = $this
+        $dinertable = $this
                 ->asArray()
                 ->where(['id' => $id])
                 ->first();
 
-        if (!$table) {
+        if (!$dinertable) {
             throw new Exception('Could not find table for specified ID');
         }
 
-        return $table;
+        return $dinertable;
     }
-    
-	public function delete($id = null, bool $purge = false) {
-            
-            $reservations = new ReservationModel();
-            $reservations->deleteByTableId($id);
-            parent::delete($id, $purge);
-            
+
+    /* override delete for remove the reservations of dinnertable */
+
+    public function delete($id = null, bool $purge = false) {
+        $reservations = new ReservationModel();
+        $reservations->deleteByTableId(intval ($id));
+        parent::delete($id, $purge);
     }
-        
-    }
+
+
+}

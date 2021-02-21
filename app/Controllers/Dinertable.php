@@ -122,12 +122,13 @@ class Dinertable extends BaseController {
    
     public function destroy() {
         try {
-            
             $rules = [
                 'id' => 'required|decimal[0]|numeric|greater_than[0]',
             ];
 
             $input = $this->getRequestInput($this->request);
+            
+            var_dump($input);
 
             if (!$this->validateRequest($input, $rules)) {
                 return $this
@@ -137,11 +138,10 @@ class Dinertable extends BaseController {
                 );
             }
 
-            
+
             $model = new DinertableModel();
-            $id = $input['id'];
             
-            $dinertable = $model->findDinertableById($id);
+            $dinertable = $model->findDinertableById($input['id']);
             $model->delete($dinertable);
 
             return $this

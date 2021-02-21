@@ -27,14 +27,14 @@ class Reservation extends BaseController {
      * Create a CheckAvailability
      */
     public function checkavailability() {
-       
+
         $rules = [
             'date' => 'required|valid_date',
             'num' => 'required|decimal[0]|numeric|greater_than[0]|less_than[100]',
         ];
 
         $input = $this->getRequestInput($this->request);
-        
+
 
         if (!$this->validateRequest($input, $rules)) {
             return $this
@@ -45,14 +45,12 @@ class Reservation extends BaseController {
         }
 
         $model = new ReservationModel();
-
         $available = $model->CheckAvailability($input['date'], $input['num']);
-
-
+      
         return $this->getResponse(
                         [
-                            'message' => count($available).'Tables available',
-                            'reservation' => $available
+                            'message' => 'Tables availables in ' . $input['date'] . ' for ' . $input['num'] . ' diners.',
+                            'reservation' => $available->getResult('array')
                         ]
         );
     }
@@ -66,8 +64,8 @@ class Reservation extends BaseController {
         $rules = [
             'dinertable_id' => 'required|decimal[0]|numeric|greater_than[0]',
             'name' => 'required|min_length[3]|max_length[255]',
-            'date' => 'required|valid_date',
-            'num' => 'required|decimal[0]|numeric|greater_than[0]|less_than[100]',
+            'reservation_date' => 'required|valid_date',
+            'mum_diner' => 'required|decimal[0]|numeric|greater_than[0]|less_than[100]',
         ];
 
         $input = $this->getRequestInput($this->request);
@@ -81,12 +79,11 @@ class Reservation extends BaseController {
         }
 
         $model = new ReservationModel();
-
-        $availables = $model->CheckAvailability($input['date'], $input['num']);
+        $available = $model->CheckAvailability($input['reservation_date'], $input['mum_diner']);
 
         $found = false;
-        foreach ($availables as $available) {
-            if ($available['dinertable_id'] == $input['dinertable_id']) {
+        foreach ($available->getResult('array') as $available) {
+            if ($available['id'] == $input['dinertable_id']) {
                 $found = true;
             }
         }
@@ -98,17 +95,6 @@ class Reservation extends BaseController {
             );
         }
 
-        $reservation = $model->where('name', $input['name'])->first();
-
-        //if exist table
-        if ($reservation) {
-            return $this->getResponse(
-                            [
-                                'message' => 'The table already exists',
-                                'reservation' => $reservation
-                            ]
-            );
-        }
 
         $model->save($input);
         $reservation = $model->where('name', $input['name'])->first();
@@ -116,7 +102,7 @@ class Reservation extends BaseController {
 
         return $this->getResponse(
                         [
-                            'message' => 'Table added successfully',
+                            'message' => 'The reservation has been made correctly',
                             'reservation' => $reservation
                         ]
         );

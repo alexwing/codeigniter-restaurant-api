@@ -16,16 +16,16 @@ class ReservationModel extends Model {
     ];
 
     public function findReservationById($id) {
-        $table = $this
+        $Reservation = $this
                 ->asArray()
                 ->where(['id' => $id])
                 ->first();
 
-        if (!$table) {
+        if (!$Reservation) {
             throw new Exception('Could not find reservation for specified ID');
         }
 
-        return $table;
+        return $Reservation;
     }
 
     //remove all reservation from a table
@@ -34,9 +34,17 @@ class ReservationModel extends Model {
         $where = ['dinertable_id' => $dinertable_id];
         return $this->db->table($this->table)->where($where)->delete();
     }
-    //Check availability to reservation a table
-    public function CheckAvailability($date,$num){
-        return $this->asArray()->db->select('');
-    }
     
+    public function CheckAvailability($date, $num) {
+
+        $sql = 'SELECT * FROM dinertable WHERE  id NOT IN (
+          SELECT di.id FROM dinertable as di
+          INNER JOIN reservation as re ON  di.id = re.dinertable_id
+          WHERE re.reservation_date = :date:)
+          AND  min_diner >= :num: and max_diner >= :num:';
+        $where = ['date' => $date, 'num' => $num];
+        $query = $this->db->query($sql, $where);
+        return $query;
+    }
+
 }
