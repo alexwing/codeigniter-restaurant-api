@@ -11,7 +11,7 @@
 <body>
 
     <h1>Cover Restaurant Test</h1>
-    <a href="./api/">api test</a>
-
+    <a href="./dinertable">Dinner Tables</a>
+    <a href="./reservation">Reservations</a>
 </body>
 </html>

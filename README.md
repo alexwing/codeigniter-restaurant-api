@@ -8,6 +8,12 @@ Test rest service, for the management of reservations in a restaurant.
 
     `{{urlserver}}/dinertable`
 
+* Show a table
+
+    `{{urlserver}}/dinertable/show`
+
+    `id:2`  
+
 * Get a table in restaurant
     
     `{{urlserver}}/dinertable/show`
@@ -29,11 +35,9 @@ Test rest service, for the management of reservations in a restaurant.
 
     `id:18`
 
-* Remove reservation
+* Get all reservations
 
-    `{{urlserver}}/reservation/destroy`
-
-    `id:2`
+    `{{urlserver}}/reservation`
 
 * Create a reservation
 
@@ -46,7 +50,7 @@ Test rest service, for the management of reservations in a restaurant.
     dinertable_id:20
     `
 
-* checkavailability
+* Check Availability for a reservation in a date
 
     `{{urlserver}}/reservation/checkavailability`
 
@@ -54,6 +58,18 @@ Test rest service, for the management of reservations in a restaurant.
     date:2021-01-01
     num: 3
     `    
+
+* Show reservation
+
+    `{{urlserver}}/reservation/show`
+
+    `id:2`    
+
+* Remove reservation
+
+    `{{urlserver}}/reservation/destroy`
+
+    `id:2`    
 
 # Migrations and seeders
 
