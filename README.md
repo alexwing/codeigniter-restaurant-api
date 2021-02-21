@@ -4,6 +4,8 @@ Test rest service, for the management of reservations in a restaurant.
 
 # Endpoints
 
+Postman configuration for test: https://documenter.getpostman.com/view/7670473/TWDXoGrs
+
 * Get all tables in restaurant
 
     `{{urlserver}}/dinertable`
